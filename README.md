@@ -1,166 +1,63 @@
-# English Premier League SQL Analysis
+# Premier League Match Analysis (2000–2026)
 
-## Project Overview
+An end-to-end analysis of English Premier League match data spanning 26 seasons, built with SQL Server for data querying/aggregation and Power BI for visualization.
 
-This project analyzes English Premier League match data spanning the 2000/01 to 2025/26 seasons using Microsoft SQL Server.
+## Overview
 
-The objective is to use SQL to explore team performance, match outcomes, goals, attendance, discipline, refereeing, VAR, expected goals (xG), and other factors that can provide insights into Premier League matches.
+This project explores nearly two decades of Premier League results to answer questions about home advantage, scoring trends, club shooting efficiency, and refereeing/discipline patterns. Raw match-level data (results, goals, half-time scores, cards, fouls, attendance, referee, derby and VAR flags) is queried in SQL Server and visualized in a multi-page Power BI dashboard.
 
-The project was developed as part of my data analytics portfolio to demonstrate practical SQL skills in cleaning, querying, transforming, aggregating, and analyzing real-world sports data.
+## Data
 
-## Dataset
+- **Source table:** `EPL_Matches`
+- **Coverage:** 19,760 matches across 26 seasons (2000–2026)
+- **Clubs:** 46+ unique teams
+- **Referees:** 85
+- **Fields include:** season, year/month/day, home/away team, full-time and half-time goals, match result, yellow/red cards (home & away), fouls, referee, attendance, derby flag, VAR flag
 
-The dataset contains 9,880 Premier League matches across 26 seasons, with 85 columns covering match results, team performance, goals, statistics, attendance, referees, managers, form, competitions, VAR, and expected goals.
+## Tools & Methodology
 
-### Main categories of data
-
-* Match information
-* Home and away teams
-* Full-time and half-time results
-* Goals
-* Shots and shots on target
-* Fouls
-* Corners
-* Yellow and red cards
-* Attendance
-* Referees
-* League position and season statistics
-* Team form
-* Head-to-head form
-* VAR
-* Derby information
-* Stadium and manager information
-* European and domestic competition information
-
-## Tools Used
-
-* Microsoft SQL Server
-* SQL Server Management Studio (SSMS)
-* GitHub
-
-## Key Questions
-
-The analysis seeks to answer questions such as:
-
-1. What percentage of Premier League matches end in a home win, draw, or away win?
-2. Which clubs have accumulated the most points across the dataset?
-3. Which clubs have the strongest home records?
-4. Which clubs have the strongest away records?
-5. Which clubs have scored the most goals?
-6. What is the average number of goals scored per match?
-7. Which seasons had the highest scoring rates?
-8. What were the highest-scoring matches?
-9. What were the biggest winning margins?
-10. How strongly does leading at half-time relate to winning?
-11. How frequently do teams recover from being behind at half-time?
-12. Which teams received the most yellow and red cards?
-13. Which referees officiated the most matches?
-14. Which referees recorded the highest cards-per-match rate?
-15. Which matches had the highest attendance?
-16. Which clubs had the highest average home attendance?
-17. How did average attendance change across seasons?
-18. How do derby matches compare with non-derby matches?
-19. How do matches involving VAR compare with matches without VAR?
-20. Which teams have scored more goals than their expected goals?
-
-## SQL Techniques Demonstrated
-
-The project demonstrates the use of:
-
-* `SELECT`
-* `WHERE`
-* `GROUP BY`
-* `HAVING`
-* `ORDER BY`
-* `CASE`
-* Aggregate functions
-* `COUNT`
-* `SUM`
-* `AVG`
-* `MIN`
-* `MAX`
-* `ROUND`
-* `DISTINCT`
-* `UNION`
-* `UNION ALL`
-* Common Table Expressions (CTEs)
-* Window functions
-* Conditional aggregation
-* Calculated fields
-* Percentage calculations
-* Filtering and handling missing values
-
-## Example Analysis
-
-### Match Result Distribution
-
-Across the dataset:
-
-* Home wins account for approximately 45.7% of matches.
-* Draws account for approximately 24.8%.
-* Away wins account for approximately 29.5%.
-
-### Goals
-
-The dataset contains approximately 26,870 goals, with an average of approximately 2.72 goals per match.
-
-Home teams account for approximately 15,169 goals, while away teams account for approximately 11,701 goals.
-
-### Attendance
-
-The average recorded attendance across the dataset is approximately 34,640 spectators per match.
-
-## Project Structure
-
-```text
-EPL-SQL-Analysis
-│
-├── README.md
-│
-├── SQL
-│   ├── 01_Data_Overview.sql
-│   ├── 02_Match_Results.sql
-│   ├── 03_Team_Performance.sql
-│   ├── 04_Goal_Analysis.sql
-│   ├── 05_Discipline_Analysis.sql
-│   ├── 06_Attendance_Analysis.sql
-│   ├── 07_xG_Analysis.sql
-│   └── 08_Advanced_Analysis.sql
-│
-└── Data
-    └── README.md
-```
+- **SQL Server (SSMS)** — 23 queries covering:
+  - Match, team, and league summary statistics
+  - League standings computed directly from results (points, wins/draws/losses, goal difference) using `UNION ALL` and `CASE`-based aggregation
+  - Home/away performance splits with `HAVING`-filtered minimum sample sizes
+  - Shooting efficiency and disciplinary metrics via subqueries and `UNION ALL`
+  - Contextual questions — derby outcomes, VAR impact, half-time comebacks, attendance trends — using window functions (`SUM(...) OVER (PARTITION BY ...)`)
+- **Power BI** — KPI cards, pie chart, time-series line chart, scatter plots, and a filterable referee/discipline table (Team and VAR slicers)
 
 ## Key Findings
 
-The SQL analysis identified several patterns within the dataset, including the overall distribution of match outcomes, differences between home and away performance, scoring trends across seasons, disciplinary patterns, attendance trends, and differences between actual goals and expected goals.
-
-Further findings are documented alongside the individual SQL queries.
+1. **Home advantage is real and persistent.** Home teams won 45.67% of matches versus a 29.52% away win rate (the remainder drawn) — a gap that held up in aggregate across 26 seasons.
+2. **Scoring output.** 26.87K goals were scored across 19.76K matches (1.36 goals/match on average), with home teams contributing the larger share of goals (56.45% vs. 43.55% away) — consistent with the home-win advantage above.
+3. **Scoring has trended upward with some volatility.** Season goal totals ranged from the low-to-mid 900s–1,000s in most years up to a peak of 1,222; the 2026 figure (521) is a partial season rather than a real decline, since the dataset was pulled mid-season.
+4. **Shot volume tracks goal output, but not perfectly.** Arsenal and Chelsea lead the league in both total shots (~14K each) and shots on target (~5.4K each), converting that volume into the most goals (1,880 and 1,775 respectively). Smaller clubs with high shot accuracy (e.g., Blackpool, Bradford) don't necessarily out-score high-volume clubs, since accuracy alone doesn't capture shot quality or frequency.
+5. **Card discipline is dominated by exposure, not just behavior.** Across 85 referees the league average is 1.71 cards per match and 227K total fouls. Anthony Taylor officiated the most matches (864) and issued the most cards overall. The clubs with the most red cards (Arsenal, Everton, Chelsea, Newcastle, Tottenham) are also among the clubs with the most matches played — raw totals likely overstate their indiscipline relative to a rate-based comparison.
 
 ## Limitations
 
-The dataset covers multiple Premier League eras, during which the number of participating clubs, competition structures, available statistics, and data collection methods changed.
-
-Expected-goals data is not available for every match, particularly for older seasons. Therefore, xG-based analysis should only use matches where xG values are available.
-
-Similarly, differences between the VAR and non-VAR periods should be interpreted as descriptive comparisons rather than proof that VAR itself caused changes in match outcomes.
+- **Raw totals vs. rates:** Several findings (e.g., red cards by team, cards by referee) are compared as totals rather than fully normalized per-match rates, which favors teams/referees with more matches.
+- **Partial current season:** The 2026 season is incomplete in the dataset, which distorts the most recent point in any time-series view.
+- **Unvisualized queries:** The SQL file includes queries on VAR impact, derby outcomes, half-time comebacks, and attendance trends that were written and tested but are not yet represented on the current Power BI dashboard.
+- **No player- or shot-quality-level data:** The dataset is match-level only — there's no expected goals (xG), player-level, or tactical (formation/possession) data, which limits how deep the shooting-efficiency and performance analysis can go.
+- **Referee/team sample sizes vary widely** (e.g., some referees have only 2 matches recorded), which can make per-match rates for low-volume referees noisy.
 
 ## Future Improvements
 
-Possible extensions to this project include:
+- Normalize team and referee card/foul stats on a per-90-minutes or per-match basis throughout (not just in the discipline table) for fairer comparisons.
+- Automate data refresh (scheduled ETL / Power BI dataflow) if the source dataset is updated regularly.
 
-* Connecting the SQL database to Power BI.
-* Creating season-by-season team performance dashboards.
-* Analyzing home advantage over time.
-* Comparing expected goals with actual goals.
-* Investigating team performance before and after managerial changes.
-* Creating predictive models using Python.
-* Building a relational database with separate Team, Match, Referee, and Season tables.
+## Repository Structure
 
-## Author
+```
+├── New_PL.sql   # Full SQL query set (23 queries: summary stats, standings,
+│                #   home/away splits, shooting efficiency, discipline,
+│                #   referees, derbies, VAR, comebacks, attendance)
+├── NEW_PL.pdf   # Power BI dashboard export (KPI overview, shooting
+│                #   efficiency scatter plots, referee/discipline analysis)
+└── README.md    # This file
+```
 
-**Odujobi Michael**
+## How to Reproduce
 
-Data Analytics Portfolio Project
-
-Skills demonstrated: SQL, data analysis, data cleaning, exploratory analysis, and sports analytics.
+1. Load the Premier League match dataset into SQL Server as `EPL_Matches`.
+2. Run `New_PL.sql` against it to generate the result sets described above.
+3. Open the Power BI file, point it at the same data source, and refresh to regenerate the dashboard pages.
