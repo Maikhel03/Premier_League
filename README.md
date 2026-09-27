@@ -45,16 +45,7 @@ This project explores nearly two decades of Premier League results to answer que
 - Normalize team and referee card/foul stats on a per-90-minutes or per-match basis throughout (not just in the discipline table) for fairer comparisons.
 - Automate data refresh (scheduled ETL / Power BI dataflow) if the source dataset is updated regularly.
 
-## Repository Structure
 
-```
-├── New_PL.sql   # Full SQL query set (23 queries: summary stats, standings,
-│                #   home/away splits, shooting efficiency, discipline,
-│                #   referees, derbies, VAR, comebacks, attendance)
-├── NEW_PL.pdf   # Power BI dashboard export (KPI overview, shooting
-│                #   efficiency scatter plots, referee/discipline analysis)
-└── README.md    # This file
-```
 
 ## How to Reproduce
 
